@@ -10,9 +10,9 @@
             </h1>
             <p class="lead text-muted">Sistem Manajemen Data Penjualan</p>
 
-            <a href="{{ route('sales.rekap') }}" class="btn btn-primary mt-3 rounded-pill px-4">
+            {{-- <a href="{{ route('sales.rekap') }}" class="btn btn-primary mt-3 rounded-pill px-4">
                 <i class="bx bx-line-chart"></i> Lihat Rekap Penjualan
-            </a>
+            </a> --}}
         </div>
     </div>
 @endsection

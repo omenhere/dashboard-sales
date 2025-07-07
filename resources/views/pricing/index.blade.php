@@ -10,58 +10,55 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        <form method="GET" action="{{ route('pricing.index') }}" class="mb-4">
+        <form method="GET" action="{{ route('product-prices.index') }}" class="mb-4">
             <div class="row align-items-end g-3">
-
-                <!-- STO Dropdown -->
+                <!-- Witel Dropdown -->
                 <div class="col-md-4">
-                    <label for="sto" class="form-label text-muted fw-semibold">
-                        <i class="bx bx-building-house me-1"></i> Pilih STO
+                    <label for="witel" class="form-label text-muted fw-semibold">
+                        <i class="bx bx-map me-1"></i> Pilih Witel
                     </label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 rounded-start-pill">
-                            <i class="bx bx-store-alt"></i>
+                            <i class="bx bx-buildings"></i>
                         </span>
-                        <select name="sto" id="sto"
+                        <select name="witel" id="witel"
                             class="form-select form-select-sm shadow-sm border-start-0 rounded-end-pill"
                             onchange="this.form.submit()">
-                            <option value="">Semua STO</option>
-                            @foreach ($stos as $sto)
-                                <option value="{{ $sto->id }}" {{ request('sto') == $sto->id ? 'selected' : '' }}>
-                                    {{ $sto->name }}
+                            <option value="">Semua Witel</option>
+                            @foreach ($witels as $witel)
+                                <option value="{{ $witel->id_witel }}" {{ request('witel') == $witel->id_witel ? 'selected' : '' }}>
+                                    {{ $witel->nama_witel }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
 
-                <!-- Subpaket Dropdown -->
+                <!-- Product Dropdown -->
                 <div class="col-md-6">
-                    <label for="subpaket" class="form-label text-muted fw-semibold">
-                        <i class="bx bx-package me-1"></i> Pilih Subpaket
+                    <label for="product" class="form-label text-muted fw-semibold">
+                        <i class="bx bx-package me-1"></i> Pilih Produk
                     </label>
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 rounded-start-pill">
                             <i class="bx bx-code-block"></i>
                         </span>
-                        <select name="subpaket" id="subpaket"
+                        <select name="product" id="product"
                             class="form-select form-select-sm shadow-sm border-start-0 rounded-end-pill"
                             onchange="this.form.submit()">
-                            <option value="">Semua Subpaket</option>
-                            @foreach ($subpakets as $subpaket)
-                                <option value="{{ $subpaket->id }}"
-                                    {{ request('subpaket') == $subpaket->id ? 'selected' : '' }}>
-                                    {{ $subpaket->bundle->name }} - {{ $subpaket->name }}
+                            <option value="">Semua Produk</option>
+                            @foreach ($products as $product)
+                                <option value="{{ $product->id_product }}"
+                                    {{ request('product') == $product->id_product ? 'selected' : '' }}>
+                                    {{ $product->name_product }}
+                                    ({{ $product->bundlings->pluck('name_bundling')->implode(', ') }})
                                 </option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-
             </div>
         </form>
-
-
 
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -74,9 +71,8 @@
                     <thead class="table-light">
                         <tr>
                             <th>WITEL</th>
-                            <th>STO</th>
-                            <th>Bundle</th>
-                            <th>Subpaket</th>
+                            <th>Bundling</th>
+                            <th>Produk</th>
                             <th>Material</th>
                             <th>Jasa</th>
                             <th>Aksi</th>
@@ -85,27 +81,32 @@
                     <tbody>
                         @foreach ($pricings as $pricing)
                             <tr>
-                                <td>{{ $pricing->sto->witel->name }}</td>
-                                <td>{{ $pricing->sto->name }}</td>
-                                <td>{{ $pricing->subpaket->bundle->name }}</td>
-                                <td>{{ $pricing->subpaket->name }}</td>
-                                <td>{{ number_format($pricing->material_price, 2) }}</td>
-                                <td>{{ number_format($pricing->jasa_price, 2) }}</td>
+                                <td>{{ optional($pricing->witel)->nama_witel ?? '-' }}</td>
+                                <td>{{ optional($pricing->product)->bundlings->pluck('name_bundling')->implode(', ') ?? '-' }}
+                                </td>
+                                <td>{{ optional($pricing->product)->name_product ?? '-' }}</td>
+                                <td>{{ number_format(optional($pricing->product)->harga_materi ?? 0, 2) }}</td>
+                                <td>{{ number_format($pricing->harga_jasa ?? 0, 2) }}</td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-warning"
-                                            onclick="editPricing('{{ $pricing->id }}')">
+                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#editModal" data-id="{{ $pricing->id }}"
+                                            data-id_witel="{{ $pricing->id_witel }}"
+                                            data-id_product="{{ $pricing->id_product }}"
+                                            data-harga_materi="{{ $pricing->product->harga_materi ?? 0 }}"
+                                            data-harga_jasa="{{ $pricing->harga_jasa }}" onclick="fillEditModal(this)">
                                             Edit
                                         </button>
-                                        <form action="{{ route('pricing.destroy', $pricing->id) }}" method="POST">
+
+                                        <form
+                                            action="{{ route('product-prices.destroy', ['product_price' => $pricing->id]) }}"
+                                            method="POST">
                                             @csrf @method('DELETE')
-                                            <button class="btn btn-sm btn-danger" onclick="return confirm('Yakin hapus?')">
-                                                Hapus
-                                            </button>
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Yakin hapus?')">Hapus</button>
                                         </form>
                                     </div>
                                 </td>
-
                             </tr>
                         @endforeach
                     </tbody>
@@ -116,61 +117,38 @@
         <!-- Modal Tambah -->
         <div class="modal fade" id="addModal" tabindex="-1">
             <div class="modal-dialog">
-                <form class="modal-content" method="POST" action="{{ route('pricing.store') }}">
+                <form action="{{ route('product-prices.store') }}" method="POST" class="modal-content">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title">Tambah Pricing</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-
                     <div class="modal-body">
-                        <!-- STO -->
                         <div class="mb-3">
-                            <label for="stoSelect">STO</label>
-                            <select id="stoSelect" name="sto_id" class="form-select" required>
-                                @foreach ($stos as $sto)
-                                    <option value="{{ $sto->id }}" data-witel="{{ $sto->witel->id }}">
-                                        {{ $sto->name }} - ({{ $sto->witel->name }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- WITEL (readonly display + hidden input) -->
-                        <div class="mb-3">
-                            <label for="witelSelectDisplay">Witel</label>
-                            <select id="witelSelectDisplay" class="form-select" disabled>
+                            <label>Witel</label>
+                            <select name="id_witel" class="form-select" required>
                                 @foreach ($witels as $witel)
-                                    <option value="{{ $witel->id }}">{{ $witel->name }}</option>
+                                    <option value="{{ $witel->id_witel }}">{{ $witel->nama_witel }}</option>
                                 @endforeach
                             </select>
-                            <input type="hidden" name="witel_id" id="witelSelect">
                         </div>
-
-                        <!-- Subpaket -->
                         <div class="mb-3">
-                            <label>Subpaket</label>
-                            <select name="subpaket_id" class="form-select" required>
-                                @foreach ($subpakets as $sp)
-                                    <option value="{{ $sp->id }}">
-                                        {{ $sp->bundle->name }} - {{ $sp->name }}
+                            <label>Produk</label>
+                            <select name="id_product" class="form-select" required>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id_product }}">
+                                        {{ $product->name_product }}
+                                        ({{ $product->bundlings->pluck('name_bundling')->implode(', ') }})
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
-
-                        <!-- Harga -->
-                        <div class="mb-3">
-                            <label>Harga Material</label>
-                            <input type="number" step="0.01" name="material_price" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
                             <label>Harga Jasa</label>
-                            <input type="number" step="0.01" name="jasa_price" class="form-control" required>
+                            <input type="number" step="0.01" name="harga_jasa" class="form-control" required>
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
@@ -183,141 +161,64 @@
     <!-- Modal Edit -->
     <div class="modal fade" id="editModal" tabindex="-1">
         <div class="modal-dialog">
-            <form id="editPricingForm" method="POST">
+            <form id="editPricingForm" method="POST" class="modal-content">
                 @csrf
                 @method('PUT')
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Pricing</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <input type="hidden" id="editPricingId" name="id">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Pricing</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Witel</label>
+                        <select name="id_witel" id="editWitel" class="form-select" required>
+                            @foreach ($witels as $witel)
+                                <option value="{{ $witel->id_witel }}">{{ $witel->nama_witel }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="modal-body">
-                        <input type="hidden" id="editPricingId">
-
-                        <div class="mb-3">
-                            <label>STO</label>
-                            <select id="editSto" name="sto_id" class="form-select"></select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Witel</label>
-                            <select id="editWitel" class="form-select" disabled></select>
-                            <input type="hidden" name="witel_id" id="editWitelHidden">
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Subpaket</label>
-                            <select id="editSubpaket" name="subpaket_id" class="form-select"></select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Harga Material</label>
-                            <input type="number" step="0.01" id="editMaterial" name="material_price"
-                                class="form-control">
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Harga Jasa</label>
-                            <input type="number" step="0.01" id="editJasa" name="jasa_price" class="form-control">
-                        </div>
+                    <div class="mb-3">
+                        <label>Produk</label>
+                        <select name="id_product" id="editProduct" class="form-select" required>
+                            @foreach ($products as $product)
+                                <option value="{{ $product->id_product }}">{{ $product->name_product }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    <div class="mb-3">
+                        <label>Harga Material</label>
+                        <input type="number" step="0.01" id="editMaterial" name="harga_materi" class="form-control"
+                            required>
                     </div>
+                    <div class="mb-3">
+                        <label>Harga Jasa</label>
+                        <input type="number" step="0.01" id="editJasa" name="harga_jasa" class="form-control"
+                            required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </form>
         </div>
     </div>
 
-
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const stoSelect = document.getElementById('stoSelect');
-            const witelSelectDisplay = document.getElementById('witelSelectDisplay');
-            const witelSelectHidden = document.getElementById('witelSelect');
+        function fillEditModal(button) {
+            const data = button.dataset;
+            
 
-            function updateWitelFromSto() {
-                const selectedSto = stoSelect.options[stoSelect.selectedIndex];
-                const witelId = selectedSto.getAttribute('data-witel');
+            document.getElementById('editPricingId').value = data.id;
+            document.getElementById('editWitel').value = data.id_witel;
+            document.getElementById('editProduct').value = data.id_product;
+            document.getElementById('editMaterial').value = data.harga_materi;
+            document.getElementById('editJasa').value = data.harga_jasa;
 
-                // Set display dropdown
-                for (let i = 0; i < witelSelectDisplay.options.length; i++) {
-                    witelSelectDisplay.options[i].selected = witelSelectDisplay.options[i].value === witelId;
-                }
-
-                // Set hidden input
-                witelSelectHidden.value = witelId;
-            }
-
-            stoSelect.addEventListener('change', updateWitelFromSto);
-            updateWitelFromSto(); // set initial value
-        });
-    </script>
-
-    <script>
-        function editPricing(id) {
-            $.get(`/pricing/${id}/edit`, function(data) {
-                $('#editPricingId').val(id);
-
-                // STO dropdown
-                $('#editSto').empty();
-                data.stos.forEach(sto => {
-                    $('#editSto').append(`<option value="${sto.id}" ${sto.id == data.pricing.sto_id ? 'selected' : ''}>
-                    ${sto.name} - (${sto.witel.name})
-                </option>`);
-                });
-
-                // Witel display
-                $('#editWitel').empty();
-                data.witels.forEach(witel => {
-                    $('#editWitel').append(`<option value="${witel.id}" ${witel.id == data.pricing.witel_id ? 'selected' : ''}>
-                    ${witel.name}
-                </option>`);
-                });
-                $('#editWitelHidden').val(data.pricing.witel_id);
-
-                // Subpaket
-                $('#editSubpaket').empty();
-                data.subpakets.forEach(sub => {
-                    $('#editSubpaket').append(`<option value="${sub.id}" ${sub.id == data.pricing.subpaket_id ? 'selected' : ''}>
-                    ${sub.bundle.name} - ${sub.name}
-                </option>`);
-                });
-
-                $('#editMaterial').val(data.pricing.material_price);
-                $('#editJasa').val(data.pricing.jasa_price);
-
-                $('#editModal').modal('show');
-            });
+            // Set form action (jangan lupa!)
+            document.getElementById('editPricingForm').action = `/product-prices/${data.id}`;
         }
-
-        $('#editPricingForm').submit(function(e) {
-            e.preventDefault();
-            const id = $('#editPricingId').val();
-
-            const formData = {
-                _token: '{{ csrf_token() }}',
-                _method: 'PUT',
-                witel_id: $('#editWitelHidden').val(),
-                sto_id: $('#editSto').val(),
-                subpaket_id: $('#editSubpaket').val(),
-                material_price: $('#editMaterial').val(),
-                jasa_price: $('#editJasa').val()
-            };
-
-            $.ajax({
-                url: `/pricing/${id}`,
-                method: 'POST',
-                data: formData,
-                success: function() {
-                    $('#editModal').modal('hide');
-                    location.reload();
-                },
-                error: function() {
-                    alert('Gagal menyimpan perubahan.');
-                }
-            });
-        });
     </script>
 
 @endsection

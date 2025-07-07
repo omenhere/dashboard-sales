@@ -2,91 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Sto;
-use Illuminate\Support\Str;
+use App\Models\Witel;
+use Illuminate\Http\Request;
 
 class StoController extends Controller
 {
-    /**
-     * Menampilkan daftar STO.
-     */
     public function index()
     {
         $stos = Sto::with('witel')->get();
-        return response()->json($stos);
+        return view('stos.index', compact('stos'));
     }
 
-    /**
-     * Menyimpan STO baru ke database.
-     */
+    public function create()
+    {
+        $witels = Witel::all();
+        return view('stos.create', compact('witels'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'witel_id' => 'required|exists:witels,id',
-            'name' => 'required|string|max:50|unique:stos,name',
+            'nama_sto' => 'required|string|max:255',
+            'id_witel' => 'required|exists:witels,id'
         ]);
 
-        $sto = Sto::create([
-            'id' => Str::uuid(),
-            'witel_id' => $request->witel_id,
-            'name' => $request->name,
-        ]);
+        Sto::create($request->only('nama_sto', 'id_witel'));
 
-        return response()->json(['message' => 'STO berhasil ditambahkan', 'data' => $sto], 201);
+        return redirect()->route('stos.index')->with('success', 'STO berhasil ditambahkan.');
     }
 
-    /**
-     * Menampilkan detail satu STO berdasarkan ID.
-     */
-    public function show($id)
+    public function show(Sto $sto)
     {
-        $sto = Sto::with('witel')->find($id);
-        
-        if (!$sto) {
-            return response()->json(['message' => 'STO tidak ditemukan'], 404);
-        }
-
-        return response()->json($sto);
+        return view('stos.show', compact('sto'));
     }
 
-    /**
-     * Mengupdate data STO.
-     */
-    public function update(Request $request, $id)
+    public function edit(Sto $sto)
     {
-        $sto = Sto::find($id);
+        $witels = Witel::all();
+        return view('stos.edit', compact('sto', 'witels'));
+    }
 
-        if (!$sto) {
-            return response()->json(['message' => 'STO tidak ditemukan'], 404);
-        }
-
+    public function update(Request $request, Sto $sto)
+    {
         $request->validate([
-            'witel_id' => 'required|exists:witels,id',
-            'name' => 'required|string|max:50|unique:stos,name,' . $id,
+            'nama_sto' => 'required|string|max:255',
+            'id_witel' => 'required|exists:witels,id'
         ]);
 
-        $sto->update([
-            'witel_id' => $request->witel_id,
-            'name' => $request->name,
-        ]);
+        $sto->update($request->only('nama_sto', 'id_witel'));
 
-        return response()->json(['message' => 'STO berhasil diperbarui', 'data' => $sto]);
+        return redirect()->route('stos.index')->with('success', 'STO berhasil diperbarui.');
     }
 
-    /**
-     * Menghapus STO.
-     */
-    public function destroy($id)
+    public function destroy(Sto $sto)
     {
-        $sto = Sto::find($id);
-
-        if (!$sto) {
-            return response()->json(['message' => 'STO tidak ditemukan'], 404);
-        }
-
         $sto->delete();
-
-        return response()->json(['message' => 'STO berhasil dihapus']);
+        return redirect()->route('stos.index')->with('success', 'STO berhasil dihapus.');
     }
 }

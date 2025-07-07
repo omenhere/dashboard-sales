@@ -20,25 +20,25 @@
             </a>
         </li>
 
-        <!-- Profit -->
+        {{-- <!-- Profit -->
         <li class="menu-item {{ request()->routeIs('profit.index') ? 'active' : '' }}">
             <a href="{{ route('profit.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dollar-circle"></i>
                 <div data-i18n="Profit">Profit</div>
             </a>
-        </li>
+        </li> --}}
 
         <!-- Sales -->
-        <li class="menu-item {{ request()->routeIs('sales.rekap') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ request()->routeIs('sales.rekap') ? 'active' : '' }}">
             <a href="{{ route('sales.rekap') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-line-chart"></i>
                 <div data-i18n="Sales">Sales</div>
             </a>
-        </li>
+        </li> --}}
 
         <!-- Pricing -->
-        <li class="menu-item {{ request()->routeIs('pricing.index') ? 'active' : '' }}">
-            <a href="{{ route('pricing.index') }}" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('product-prices.index') ? 'active' : '' }}">
+            <a href="{{ route('product-prices.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-file"></i>
                 <div data-i18n="Pricing">Pricing</div>
             </a>
