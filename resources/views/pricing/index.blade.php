@@ -12,7 +12,6 @@
 
         <form method="GET" action="{{ route('product-prices.index') }}" class="mb-4">
             <div class="row align-items-end g-3">
-                <!-- Witel Dropdown -->
                 <div class="col-md-4">
                     <label for="witel" class="form-label text-muted fw-semibold">
                         <i class="bx bx-map me-1"></i> Pilih Witel
@@ -34,7 +33,6 @@
                     </div>
                 </div>
 
-                <!-- Product Dropdown -->
                 <div class="col-md-6">
                     <label for="product" class="form-label text-muted fw-semibold">
                         <i class="bx bx-package me-1"></i> Pilih Produk

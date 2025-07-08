@@ -9,8 +9,6 @@
         <!-- Filter Form -->
         <form method="GET" action="{{ route('profit.index') }}" class="mb-4">
             <div class="row align-items-end g-3">
-                <!-- STO Filter -->
-                <!-- Witel Filter -->
                 <div class="col-md-4">
                     <label for="witel" class="form-label text-muted fw-semibold">
                         <i class="bx bx-map me-1"></i> Pilih Witel
@@ -55,7 +53,6 @@
                 </div>
             </div>
         </form>
-        <!-- Nilai Total Material/Jasa dari Semua Produk -->
         <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
 
             <!-- Total Penjualan -->
@@ -103,7 +100,7 @@
 
         <hr class="my-4">
 
-        <!-- Rekap Tabel per STO dan Witel -->
+
         <!-- Rekap Tabel per STO dan Witel -->
         <div class="card shadow-sm border-0 rounded-4 mb-4">
             <div class="card-body p-4">

@@ -71,9 +71,6 @@ class SaleController extends Controller
             ->with('success', 'Penjualan berhasil ditambahkan.');
     }
 
-    /* ===========================
-     |  EDIT
-     |===========================*/
     public function edit($id)
     {
         $sale = Sale::with(['sto.witel', 'product.bundlings'])->findOrFail($id);
@@ -84,9 +81,7 @@ class SaleController extends Controller
         return view('sales.edit', compact('sale', 'witels', 'stos', 'products'));
     }
 
-    /* ===========================
-     |  UPDATE
-     |===========================*/
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -103,9 +98,7 @@ class SaleController extends Controller
             ->with('success', 'Penjualan berhasil di-update.');
     }
 
-    /* ===========================
-     |  DESTROY
-     |===========================*/
+
     public function destroy(Sale $sale)
     {
         $sale->delete();

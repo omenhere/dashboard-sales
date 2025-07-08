@@ -14,17 +14,14 @@ class ProductPriceController extends Controller
     {
         $query = ProductPrice::with(['sto.witel', 'product.bundlings']);
 
-        // Filter berdasarkan STO (jika ada)
         if ($request->sto) {
             $query->where('id_sto', $request->sto);
         }
 
-        // Filter berdasarkan produk
         if ($request->product) {
             $query->where('id_product', $request->product);
         }
 
-        // 🔥 Tambahkan ini untuk filter berdasarkan WITEL
         if ($request->witel) {
             $query->where('id_witel', $request->witel);
         }
