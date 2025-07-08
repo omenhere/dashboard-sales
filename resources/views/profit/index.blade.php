@@ -6,9 +6,33 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <h4 class="mb-4">Rekap Profit per Bundle</h4>
 
-        <!-- Filter STO -->
+        <!-- Filter Form -->
         <form method="GET" action="{{ route('profit.index') }}" class="mb-4">
             <div class="row align-items-end g-3">
+                <!-- STO Filter -->
+                <!-- Witel Filter -->
+                <div class="col-md-4">
+                    <label for="witel" class="form-label text-muted fw-semibold">
+                        <i class="bx bx-map me-1"></i> Pilih Witel
+                    </label>
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-pill">
+                            <i class="bx bx-map-pin"></i>
+                        </span>
+                        <select name="witel" id="witel"
+                            class="form-select form-select-sm border-start-0 rounded-end-pill"
+                            onchange="this.form.submit()">
+                            <option value="">Semua Witel</option>
+                            @foreach ($witels as $witel)
+                                <option value="{{ $witel->id_witel }}"
+                                    {{ $selectedWitel === $witel->id_witel ? 'selected' : '' }}>
+                                    {{ $witel->nama_witel }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <div class="col-md-4">
                     <label for="sto" class="form-label text-muted fw-semibold">
                         <i class="bx bx-building-house me-1"></i> Pilih STO
@@ -22,8 +46,8 @@
                             onchange="this.form.submit()">
                             <option value="">Semua STO</option>
                             @foreach ($stos as $sto)
-                                <option value="{{ $sto->name }}" {{ $selectedSto === $sto->name ? 'selected' : '' }}>
-                                    {{ $sto->name }}
+                                <option value="{{ $sto->id_sto }}" {{ $selectedSto === $sto->id_sto ? 'selected' : '' }}>
+                                    {{ $sto->nama_sto }}
                                 </option>
                             @endforeach
                         </select>
@@ -31,107 +55,101 @@
                 </div>
             </div>
         </form>
+        <!-- Nilai Total Material/Jasa dari Semua Produk -->
+        <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
 
-
-        <!-- Profit per Bundle -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
-            @foreach ($result as $bundleName => $subpakets)
-                <div class="col">
-                    <div class="card h-100 border-0 shadow-sm rounded-4">
-                        <div class="card-body p-4">
-                            <h5 class="mb-3 text-primary d-flex align-items-center">
-                                <i class="bx bx-box me-2"></i> {{ $bundleName }}
-                            </h5>
-                            @foreach ($subpakets as $item)
-                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom mb-2">
-                                    <span class="text-muted">{{ $item->subpaket }}</span>
-                                    <span class="fw-bold text-dark">Rp
-                                        {{ number_format($item->profit, 0, ',', '.') }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-
-        <hr class="my-4">
-
-        <!-- Ringkasan Profit Keseluruhan -->
-        <div class="row mb-4">
+            <!-- Total Penjualan -->
             <div class="col">
-                <div class="card border-0 shadow-sm rounded-4 bg-light">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-2">Total Profit Keseluruhan</h6>
-                        <h4 class="fw-bold text-success">
-                            Rp {{ number_format($materialGrandTotal + $jasaKpiGrandTotal, 0, ',', '.') }}
-                        </h4>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-success w-100"></div>
-                        </div>
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 small">
+                        <h6 class="text-muted mb-1">Total Penjualan</h6>
+                        <h5 class="fw-bold text-info mb-0">{{ number_format($totalpenjualan, 0, ',', '.') }}</h5>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Summary Section -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
 
             <!-- Total Material -->
             <div class="col">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-2">Total Material</h6>
-                        <h4 class="fw-bold text-dark">Rp {{ number_format($materialGrandTotal, 0, ',', '.') }}</h4>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-primary w-100"></div>
-                        </div>
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 small">
+                        <h6 class="text-muted mb-1">Total Nilai Material</h6>
+                        <h5 class="fw-bold text-primary mb-0">Rp {{ number_format($totalMaterialValue, 0, ',', '.') }}</h5>
                     </div>
                 </div>
             </div>
 
-            <!-- Total Jasa -->
+            <!-- Nilai Jasa -->
             <div class="col">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-2">Total Jasa</h6>
-                        <h4 class="fw-bold text-dark">Rp {{ number_format($jasaGrandTotal ?? 0, 0, ',', '.') }}</h4>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-info w-100"></div>
-                        </div>
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 small">
+                        <h6 class="text-muted mb-1">Total Nilai Jasa</h6>
+                        <h5 class="fw-bold text-info mb-0">Rp {{ number_format($totalJasaValue, 0, ',', '.') }}</h5>
                     </div>
                 </div>
             </div>
 
-            <!-- Jasa Setelah KPI -->
+            <!-- Total Gabungan -->
             <div class="col">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body">
-                        <h6 class="text-muted mb-2">Jasa Setelah KPI</h6>
-                        <h4 class="fw-bold text-dark">Rp {{ number_format($jasaKpiGrandTotal, 0, ',', '.') }}</h4>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-success w-100"></div>
-                        </div>
+                <div class="card h-100 border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 small">
+                        <h6 class="text-muted mb-1">Total Nilai</h6>
+                        <h5 class="fw-bold text-success mb-0">Rp {{ number_format($totalValue, 0, ',', '.') }}</h5>
                     </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <hr class="my-4">
+
+        <!-- Rekap Tabel per STO dan Witel -->
+        <!-- Rekap Tabel per STO dan Witel -->
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-body p-4">
+                <h5 class="mb-3 fw-semibold">Detail Rekap per STO dan Witel</h5>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Witel</th>
+                                <th>STO</th>
+                                <th class="text-end">Material</th>
+                                <th class="text-end">Jasa</th>
+                                <th class="text-end">KPI (%)</th>
+                                <th class="text-end">BAIJ Jasa</th>
+                                <th class="text-end">Pembulatan</th>
+                                <th class="text-end">Total Nilai</th>
+                                <th class="text-end">Total (Bulat)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($rekapPerSto as $i => $row)
+                                <tr>
+                                    <td>{{ $i + 1 }}</td>
+                                    <td>{{ $row->witel }}</td>
+                                    <td>{{ $row->sto }}</td>
+                                    <td class="text-end">Rp {{ number_format($row->material, 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp {{ number_format($row->jasa, 0, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format($row->kpi, 2) }}%</td>
+                                    <td class="text-end">Rp {{ number_format($row->baij_jasa, 0, ',', '.') }}</td>
+                                    <td class="text-end">Rp {{ number_format($row->pembulatan_baij, 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-end fw-semibold">Rp {{ number_format($row->total, 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-end fw-bold text-primary">Rp
+                                        {{ number_format($row->total_bulat, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                    </table>
                 </div>
             </div>
         </div>
 
-        <!-- KPI Info -->
-        @if ($selectedKpi)
-            @php
-                $kpiValue = $selectedKpi;
-                $kpiClass = $kpiValue < 100 ? 'alert-danger' : ($kpiValue == 100 ? 'alert-warning' : 'alert-success');
-                $kpiIcon =
-                    $kpiValue < 100 ? 'bx bx-trending-down' : ($kpiValue == 100 ? 'bx bx-minus' : 'bx bx-trending-up');
-            @endphp
 
-            <div class="alert {{ $kpiClass }} mt-3 rounded-4 shadow-sm d-flex align-items-center">
-                <i class="{{ $kpiIcon }} fs-4 me-2"></i>
-                <div>
-                    <strong>KPI STO "{{ $selectedSto }}"</strong>: {{ number_format($kpiValue, 2) }}%
-                </div>
-            </div>
-        @endif
-    </div>
-@endsection
+
+    @endsection

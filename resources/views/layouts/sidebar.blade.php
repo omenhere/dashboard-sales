@@ -20,13 +20,12 @@
             </a>
         </li>
 
-        {{-- <!-- Profit -->
         <li class="menu-item {{ request()->routeIs('profit.index') ? 'active' : '' }}">
             <a href="{{ route('profit.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-dollar-circle"></i>
                 <div data-i18n="Profit">Profit</div>
             </a>
-        </li> --}}
+        </li> 
 
         <!-- Sales -->
         <li class="menu-item {{ request()->routeIs('sales.index') ? 'active' : '' }}">

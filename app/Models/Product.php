@@ -23,5 +23,11 @@ class Product extends Model
     {
         return $this->belongsToMany(Bundling::class, 'product_bundling', 'id_product', 'id_bundling');
     }
+    public function getBundleAttribute()
+    {
+        return $this->bundlings->first();
+    }
+
+
 
 }

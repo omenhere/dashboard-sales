@@ -9,7 +9,7 @@ class ProductPrice extends Model
     protected $table = 'product_prices';
     public $timestamps = false;
 
-    protected $fillable = ['id_product', 'id_witel', 'id_sto', 'harga_jasa'];
+    protected $fillable = ['id_product', 'id_witel', 'harga_jasa'];
 
     public function sto()
     {

@@ -7,6 +7,7 @@ use App\Http\Controllers\BundlingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ProfitController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,3 +30,6 @@ Route::resource('product-prices', ProductPriceController::class);
 
 // Sale
 Route::resource('sales', SaleController::class);
+
+// Profi
+Route::resource('profit', ProfitController::class)->only(['index']);
