@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->foreign('id_witel')->references('id_witel')->on('witels')->onDelete('cascade');
             $table->timestamps();
         });
-
     }
 
     public function down()
@@ -22,4 +21,3 @@ return new class extends Migration {
         Schema::dropIfExists('stos');
     }
 };
-

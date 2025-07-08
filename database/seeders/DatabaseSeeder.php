@@ -15,10 +15,12 @@ class DatabaseSeeder extends Seeder
         // Panggil seeder lainnya di sini
         $this->call([
             WitelSeeder::class,
+            StoSeeder::class,
             ProductSeeder::class,
             BundlingSeeder::class,
             ProductBundlingSeeder::class,
             ProductPriceSeeder::class,
+            SaleSeeder::class,
         ]);
     }
 }

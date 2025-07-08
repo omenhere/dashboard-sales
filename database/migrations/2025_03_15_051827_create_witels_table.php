@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->string('nama_witel');
             $table->timestamps();
         });
-
     }
 
     public function down()
@@ -20,4 +19,3 @@ return new class extends Migration {
         Schema::dropIfExists('witels');
     }
 };
-

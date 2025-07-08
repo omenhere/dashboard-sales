@@ -16,7 +16,7 @@ class ProductPriceController extends Controller
 
         // Filter berdasarkan STO (jika ada)
         if ($request->sto) {
-            $query->where('sto_id', $request->sto);
+            $query->where('id_sto', $request->sto);
         }
 
         // Filter berdasarkan produk

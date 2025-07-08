@@ -5,9 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('product_bundling', function (Blueprint $table) {
@@ -19,13 +16,8 @@ return new class extends Migration {
 
             $table->primary(['id_product', 'id_bundling']);
         });
-
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('product_bundling');

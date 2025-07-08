@@ -29,12 +29,13 @@
         </li> --}}
 
         <!-- Sales -->
-        {{-- <li class="menu-item {{ request()->routeIs('sales.rekap') ? 'active' : '' }}">
-            <a href="{{ route('sales.rekap') }}" class="menu-link">
+        <li class="menu-item {{ request()->routeIs('sales.index') ? 'active' : '' }}">
+            <a href="{{ route('sales.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-line-chart"></i>
-                <div data-i18n="Sales">Sales</div>
+                <div data-i18n="Sales">Rekap Penjualan</div>
             </a>
-        </li> --}}
+        </li>
+
 
         <!-- Pricing -->
         <li class="menu-item {{ request()->routeIs('product-prices.index') ? 'active' : '' }}">

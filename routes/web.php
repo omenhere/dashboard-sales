@@ -6,6 +6,7 @@ use App\Http\Controllers\StoController;
 use App\Http\Controllers\BundlingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceController;
+use App\Http\Controllers\SaleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,3 +26,6 @@ Route::resource('products', ProductController::class);
 
 // Product Pricing
 Route::resource('product-prices', ProductPriceController::class);
+
+// Sale
+Route::resource('sales', SaleController::class);
